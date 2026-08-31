@@ -2,8 +2,6 @@
 
 **Scope Defender** is an AI orchestrator developed to assist engineering professionals and teams in negotiating deadlines and scopes for urgent demands.
 
-# 🛡️ Scope Defender
-
 **[🎥 Click here to watch the Demo Video](https://youtu.be/LuyZAzXFsKc)**
 
 ## 🎯 The Problem
