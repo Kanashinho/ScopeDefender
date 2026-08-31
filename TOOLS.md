@@ -1,241 +1,367 @@
-# 🧰 Mapeamento de Ferramentas (Nodes)
+# 🧰 Tool Mapping (Nodes)
 
-No framework do **N8N**, cada nó (*Node*) funciona como uma ferramenta específica para a arquitetura do agente.
 
-O Scope Defender utiliza uma separação explícita entre **processamento semântico, cálculo matemático, tomada de decisão e geração de linguagem**.
+
+In the **N8N** framework, each node acts as a specific tool for the agent's architecture.
+
+Scope Defender uses an explicit separation between **semantic processing, mathematical calculation, decision-making, and language generation**.
 
 ---
 
 ## 🔹 On Manual Click — Trigger
 
-**Função:** inicia a execução controlada do workflow.
 
-Utilizado para:
 
-- Demonstrações.
-- Testes.
-- Validação das diferentes ramificações.
+**Function:** initiates the controlled execution of the workflow.
+
+Used for:
+
+* Demonstrations.
+
+
+* Testing.
+
+
+* Validation of different branches.
+
+
 
 ---
 
 ## 🔹 Edit Fields — Set
 
-**Função:** ferramenta de injeção de texto.
 
-Simula a caixa de entrada interceptando a demanda do gestor.
 
-Pode fornecer:
+**Function:** text injection tool.
 
-- Demanda solicitada.
-- Prazo.
-- Contexto da cobrança.
-- Estimativa de esforço.
+It simulates the inbox by intercepting the manager's request.
+
+It can provide:
+
+* Requested demand.
+
+
+* Deadline.
+
+
+* Request context.
+
+
+* Effort estimation.
+
+
 
 ---
 
-## 🔹 Read/Write Files from Disk — Leitura
+## 🔹 Read/Write Files from Disk — Reading
 
-**Função:** ferramenta de extração.
 
-Carrega a capacidade da equipe através de um arquivo JSON local.
 
-Os dados podem representar:
+**Function:** extraction tool.
 
-- Capacidade disponível.
-- Alocação atual.
-- Outras variáveis necessárias para o cálculo.
+Loads the team's capacity through a local JSON file.
+
+The data can represent:
+
+* Available capacity.
+
+
+* Current allocation.
+
+
+* Other variables required for the calculation.
+
+
 
 ---
 
 ## 🔹 Extract from File
 
-**Função:** faz o parse do arquivo para propriedades manipuláveis pelo workflow.
 
-Transforma o conteúdo estruturado em dados que podem ser utilizados pelos próximos nós.
+
+**Function:** parses the file into properties that can be manipulated by the workflow.
+
+Transforms structured content into data that can be used by subsequent nodes.
 
 ---
 
 ## 🔹 Code — JavaScript
 
-**Função:** motor aritmético determinístico.
 
-Executa o cálculo exato do saldo de horas:
+
+**Function:** deterministic arithmetic engine.
+
+Executes the exact calculation of the hours balance:
 
 ```text
 saldo = capacidade - alocação
+
 ```
 
-O cálculo foi deliberadamente retirado do LLM para evitar **alucinações matemáticas**, erros de subtração ou interpretações incorretas de sinais.
+The calculation was deliberately removed from the LLM to prevent **mathematical hallucinations**, subtraction errors, or incorrect sign interpretations.
 
-### Princípio
+### Principle
 
-> **LLM interpreta. Code calcula.**
 
-O resultado produzido pelo Code Node serve como fonte numérica confiável para o restante do workflow.
+
+> **LLM interprets. Code calculates.**
+> 
+
+The result produced by the Code Node serves as a reliable numerical source for the remainder of the workflow.
 
 ---
 
-## 🔹 Switch — Roteador Determinístico
+## 🔹 Switch — Deterministic Router
 
-**Função:** roteamento baseado em regras explícitas.
 
-O Switch avalia o saldo calculado e divide o fluxo em três cenários:
 
-### 🔴 Inviável
+**Function:** routing based on explicit rules.
+
+The Switch evaluates the calculated balance and divides the flow into three scenarios:
+
+### 🔴 Unfeasible
+
+
 
 ```text
 saldo < 0
+
 ```
 
-Direciona para o comunicador defensivo.
+Routes to the defensive communicator.
 
-### 🟡 Parcial
+### 🟡 Partial
+
+
 
 ```text
 saldo >= 0 && saldo < 8
+
 ```
 
-Direciona para o comunicador de alerta de risco.
+Routes to the risk alert communicator.
 
-### 🟢 Viável
+### 🟢 Feasible
+
+
 
 ```text
 saldo >= 8
+
 ```
 
-Direciona para o comunicador de aceite limpo.
+Routes to the clean acceptance communicator.
 
-A decisão não depende do LLM.
-
----
-
-## 🔹 Ollama — Comunicadores IA (3x)
-
-**Função:** geração de linguagem natural com **Prompt Isolation**.
-
-Existem três nós Ollama independentes, cada um com um prompt específico.
-
-### 1. Comunicador — Inviável
-
-**Objetivo:** defesa de escopo.
-
-Características:
-
-- Tom corporativo.
-- Fundamentação baseada em números.
-- Recusa justificada do prazo.
-- Proposta de divisão do escopo quando aplicável.
+The decision does not depend on the LLM.
 
 ---
 
-### 2. Comunicador — Parcial
+## 🔹 Ollama — AI Communicators (3x)
 
-**Objetivo:** alerta de risco.
 
-Características:
 
-- Reconhece que existe capacidade limitada.
-- Comunica o risco associado ao prazo.
-- Evita uma recusa absoluta quando a entrega parcial é possível.
-- Pode propor priorização de funcionalidades.
+**Function:** natural language generation with **Prompt Isolation**.
+
+There are three independent Ollama nodes, each with a specific prompt.
+
+### 1. Communicator — Unfeasible
+
+
+
+**Objective:** scope defense.
+
+Characteristics:
+
+* Corporate tone.
+
+
+* Reasoning based on numbers.
+
+
+* Justified rejection of the deadline.
+
+
+* Proposal for scope division when applicable.
+
+
 
 ---
 
-### 3. Comunicador — Viável
+### 2. Communicator — Partial
 
-**Objetivo:** aceite limpo.
 
-Características:
 
-- Confirma a viabilidade.
-- Mantém comunicação objetiva.
-- Não introduz riscos inexistentes.
-- Não cria justificativas desnecessárias.
+**Objective:** risk alert.
+
+Characteristics:
+
+* Acknowledges limited capacity exists.
+
+
+* Communicates the risk associated with the deadline.
+
+
+* Avoids an absolute refusal when partial delivery is possible.
+
+
+* May propose feature prioritization.
+
+
 
 ---
 
-### Por que três comunicadores?
+### 3. Communicator — Feasible
 
-Um único prompt genérico apresentou comportamento inconsistente entre cenários.
 
-O **Prompt Isolation** resolve esse problema restringindo cada agente a uma única função comunicacional.
+
+**Objective:** clean acceptance.
+
+Characteristics:
+
+* Confirms feasibility.
+
+
+* Maintains objective communication.
+
+
+* Does not introduce non-existent risks.
+
+
+* Does not create unnecessary justifications.
+
+
+
+---
+
+### Why three communicators?
+
+
+
+A single generic prompt showed inconsistent behavior across scenarios.
+
+**Prompt Isolation** solves this issue by restricting each agent to a single communicational role.
 
 ```text
                     SWITCH
                        │
           ┌────────────┼────────────┐
           ▼            ▼            ▼
-      INVIÁVEL       PARCIAL       VIÁVEL
+      UNFEASIBLE      PARTIAL       FEASIBLE
           │            │            │
           ▼            ▼            ▼
       Ollama #1      Ollama #2     Ollama #3
-      Defensivo       Alerta        Aceite
+      Defensive        Alert       Acceptance
+
 ```
 
 ---
 
-## 🔹 Write to File — Gravação
+## 🔹 Write to File — Writing
 
-**Função:** ferramenta de auditoria.
 
-Salva o e-mail gerado diretamente em arquivos `.txt`, permitindo registrar a trajetória do agente.
 
-Arquivos esperados:
+**Function:** auditing tool.
+
+Saves the generated email directly into `.txt` files, allowing the agent's trajectory to be recorded.
+
+Expected files:
 
 ```text
 /data/trajectory_01_inviavel.txt
 /data/trajectory_02_parcial.txt
 /data/trajectory_03_viavel.txt
+
 ```
 
-Esses arquivos permitem verificar posteriormente qual resposta foi produzida para cada cenário.
+These files allow subsequent verification of which response was produced for each scenario.
 
 ---
 
-# 🧩 Resumo da Arquitetura
+# 🧩 Architecture Summary
 
-| Node | Função | Determinístico? |
-|---|---|---|
-| **On Manual Click** | Trigger | Sim |
-| **Edit Fields** | Entrada | Sim |
-| **Read/Write Files** | Leitura de dados | Sim |
-| **Extract from File** | Parse | Sim |
-| **Code** | Cálculo matemático | **Sim** |
-| **Switch** | Roteamento | **Sim** |
-| **Ollama #1** | Comunicação inviável | Não |
-| **Ollama #2** | Comunicação parcial | Não |
-| **Ollama #3** | Comunicação viável | Não |
-| **Write to File** | Auditoria | Sim |
+
+
+| Node | Function | Deterministic? |
+| --- | --- | --- |
+| **On Manual Click** | Trigger
+
+ | Yes
+
+ |
+| **Edit Fields** | Input
+
+ | Yes
+
+ |
+| **Read/Write Files** | Data reading
+
+ | Yes
+
+ |
+| **Extract from File** | Parse
+
+ | Yes
+
+ |
+| **Code** | Mathematical calculation
+
+ | **Yes**<br> |
+| **Switch** | Routing
+
+ | **Yes**<br> |
+| **Ollama #1** | Unfeasible communication
+
+ | No
+
+ |
+| **Ollama #2** | Partial communication
+
+ | No
+
+ |
+| **Ollama #3** | Feasible communication
+
+ | No
+
+ |
+| **Write to File** | Auditing
+
+ | Yes
+
+ |
 
 ---
 
-# 🎯 Princípio da Arquitetura
+# 🎯 Architecture Principle
 
-O Scope Defender segue uma divisão explícita de responsabilidades:
+
+
+Scope Defender follows an explicit separation of responsibilities:
 
 ```text
 ┌─────────────────────────────────────┐
-│           CAMADA SEMÂNTICA          │
+│            SEMANTIC LAYER           │
 │                                     │
-│             Ollama                  │
-│       Interpretação / Texto         │
+│                Ollama               │
+│         Interpretation / Text       │
 └──────────────────┬──────────────────┘
                    │
                    ▼
 ┌─────────────────────────────────────┐
-│           CAMADA LÓGICA             │
+│            LOGICAL LAYER            │
 │                                     │
-│       Code Node + Switch            │
-│        Cálculo + Decisão            │
+│          Code Node + Switch         │
+│        Calculation + Decision       │
 └──────────────────┬──────────────────┘
                    │
                    ▼
 ┌─────────────────────────────────────┐
-│           CAMADA DE SAÍDA           │
+│             OUTPUT LAYER            │
 │                                     │
-│          Write to File              │
-│             Auditoria               │
+│            Write to File            │
+│               Auditing              │
 └─────────────────────────────────────┘
+
 ```
 
-O resultado é uma arquitetura mais previsível, auditável e resistente a falhas de raciocínio matemático ou mistura de instruções entre diferentes cenários.
+The result is a more predictable, auditable architecture that is resistant to mathematical reasoning failures or mixed instructions between different scenarios.
