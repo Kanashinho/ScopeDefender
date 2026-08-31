@@ -1,0 +1,11 @@
+# Ambiente
+.env
+.DS_Store
+
+# Volumes locais (se criados na raiz)
+/n8n_data
+/ollama_data
+
+# Dados de teste locais com informações reais
+/data/*-real.json
+/data/*-real.csv

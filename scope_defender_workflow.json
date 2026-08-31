@@ -1,0 +1,533 @@
+{
+  "name": "scope_defender_workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d89e38d5-5730-4713-bf16-173e56fc585c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "45534c74-5897-4143-b66d-26ccad8e5473",
+              "name": "email_gestor",
+              "value": "Assunto: Nova demanda urgente – entrega até hoje  Olá, equipe de TI,  Precisamos desenvolver e disponibilizar um novo sistema de controle de chamados com cadastro de usuários, níveis de acesso, abertura e acompanhamento de solicitações, notificações por e-mail, painel de indicadores e integração com o sistema atual.  A demanda deve ser concluída, testada e colocada em produção até hoje, às 17h, mesmo que seja necessário trabalhar após o horário normal. A diretoria considera esse prazo definitivo, portanto não haverá possibilidade de adiamento.  Conto com o empenho de todos para que a entrega seja realizada dentro do prazo.  Atenciosamente, Gestor de Tecnologia",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "2460ac00-200d-4725-b65f-9ba73d8218f0",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "fromJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "3c9d84d5-5513-47e9-9904-2e5d1992b4ec",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Acessa as horas alocadas do recurso selecionado no sumário\nconst capacidade_semanal = 40;\nconst horas_alocadas = $input.first().json.data.capacity_summary[1].assigned_hours; \nconst disponivel = capacidade_semanal - horas_alocadas;\n\n// Define a exigência da nova demanda\nconst exigido = 20; \nconst saldo = disponivel - exigido;\n\n// Entrega a matemática pronta para o LLM interpretar\nreturn {\n  disponivel: disponivel,\n  exigido: exigido,\n  saldo: saldo\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "974d0d4a-42e8-41f3-aba4-1f7f875aad5e",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/home/node/.n8n-files/trajectories/trajectory_01_inviavel.txt",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1920,
+        -160
+      ],
+      "id": "e5d00bdb-d665-49ea-9803-8fc47076c2a8",
+      "name": "Write Files Inviave"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/home/node/.n8n-files/trajectories/trajectory_02_parcial.txt",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1920,
+        176
+      ],
+      "id": "5730cb6b-a25c-4cac-956f-2d765677f9a4",
+      "name": "Write Files Parcial"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/home/node/.n8n-files/trajectories/trajectory_03_viavel.txt",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1920,
+        0
+      ],
+      "id": "b6af328e-bfde-44c5-9a8b-0dba36b7e5b4",
+      "name": "Write Files Viavel"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f2d0e362-ecf2-4afe-878b-b94cd82075a4",
+                    "leftValue": "={{ $json.saldo }}",
+                    "rightValue": 0,
+                    "operator": {
+                      "type": "number",
+                      "operation": "lt"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Inviável"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "6227e4c3-3ebd-473c-b80d-aaaca7b8f648",
+                    "leftValue": "={{ $json.saldo }}",
+                    "rightValue": 8,
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Viável"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a425885e-817a-4626-bf2f-2ba7678a9d63",
+                    "leftValue": "={{ $json.saldo >= 0 && $json.saldo < 8 }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Parcial"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        1088,
+        -16
+      ],
+      "id": "15ab2d7a-5fe9-4416-a614-c22c3f07ecc8",
+      "name": "Rules"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "llama3:latest",
+          "mode": "list",
+          "cachedResultName": "llama3:latest"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Você é um Especialista em Comunicação Corporativa. Escreva UM (1) único e-mail profissional e objetivo para o Gestor de Tecnologia.\n\nContexto Técnico Atual:\n\nHoras já comprometidas/disponíveis: {{ JSON.parse($json.content).disponivel }}h\n\nHoras exigidas pela nova demanda: {{ JSON.parse($json.content).exigido }}h\n\nSaldo final da equipe: {{ JSON.parse($json.content).saldo }}h (Sobrecarga).\n\nDiretrizes de Redação:\n\nInicie diretamente com \"Olá, Gestor,\".\n\nRecuse educadamente o prazo de hoje às 17h. Use os números exatos acima para justificar que a equipe já está trabalhando com um déficit de horas e absorver a demanda causaria impacto na qualidade.\n\nProponha a divisão de escopo: Fase 1 (funcionalidades essenciais) e Fase 2 (funcionalidades secundárias).\n\nAssine apenas UMA VEZ no final como \"[Seu Nome] - Engenharia de Software\".\n\nNÃO repita parágrafos. NÃO adicione texto após a assinatura. Cuidado com erros de digitação."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        -160
+      ],
+      "id": "111716b8-2f1f-4571-9a16-b90851fdc69a",
+      "name": "IA Unfeasible Response",
+      "credentials": {
+        "ollamaApi": {
+          "id": "DsqjgX0o2SyOzEii",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "llama3:latest",
+          "mode": "list",
+          "cachedResultName": "llama3:latest"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Você é um Especialista em Comunicação Corporativa. Escreva UM (1) único e-mail profissional e objetivo para o Gestor de Tecnologia.\n\nContexto Técnico Atual:\n\nHoras disponíveis: {{ JSON.parse($json.content).disponivel }}h\n\nHoras exigidas pela nova demanda: {{ JSON.parse($json.content).exigido }}h\n\nSaldo final da equipe: {{ JSON.parse($json.content).saldo }}h (Capacidade segura).\n\nDiretrizes de Redação:\n\nInicie diretamente com \"Olá, Gestor,\".\n\nAceite a demanda e confirme a entrega para hoje às 17h de forma direta e positiva.\n\nMencione brevemente que a capacidade técnica atual comporta a exigência com total segurança e qualidade, não sendo necessário remanejar outros projetos.\n\nAssine apenas UMA VEZ no final como \"[Seu Nome] - Engenharia de Software\".\n\nNÃO repita parágrafos. NÃO adicione texto após a assinatura. Cuidado com erros de digitação."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        0
+      ],
+      "id": "bbdbba3c-3e59-4db7-807a-175b0787caf9",
+      "name": "IA Viavel Response",
+      "credentials": {
+        "ollamaApi": {
+          "id": "DsqjgX0o2SyOzEii",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "llama3:latest",
+          "mode": "list",
+          "cachedResultName": "llama3:latest"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Você é um Especialista em Comunicação Corporativa. Escreva UM (1) único e-mail profissional e objetivo para o Gestor de Tecnologia.\n\nContexto Técnico Atual:\n\nHoras já comprometidas/disponíveis: {{ JSON.parse($json.content).disponivel }}h\n\nHoras exigidas pela nova demanda: {{ JSON.parse($json.content).exigido }}h\n\nSaldo final da equipe: {{ JSON.parse($json.content).saldo }}h (Capacidade no limite).\n\nDiretrizes de Redação:\n\nInicie diretamente com \"Olá, Gestor,\".\n\nConfirme o aceite da entrega para hoje às 17h, MAS faça um alerta profissional sobre o risco operacional.\n\nUse os números exatos do Contexto Técnico para evidenciar que absorver essa demanda zera a margem de segurança da equipe. Comunique que não haverá espaço para imprevistos, alterações de escopo ou novos chamados sem impactar projetos já em andamento.\n\nAssine apenas UMA VEZ no final como \"[Seu Nome] - Engenharia de Software\".\n\nNÃO repita parágrafos. NÃO adicione texto após a assinatura. Cuidado com erros de digitação."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        176
+      ],
+      "id": "920984ac-9a32-4b07-9800-34c8fc198830",
+      "name": "IA Partial Response",
+      "credentials": {
+        "ollamaApi": {
+          "id": "DsqjgX0o2SyOzEii",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1680,
+        -160
+      ],
+      "id": "6725df90-d515-4c4c-bb8d-1003ae98e505",
+      "name": "Convert to File Unfeasible"
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1680,
+        0
+      ],
+      "id": "54070124-f35e-41d1-a96d-a3b59c3e3883",
+      "name": "Convert to File Viavel"
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1680,
+        176
+      ],
+      "id": "fa88629a-c128-4e1c-a6cf-0f778d14e9f7",
+      "name": "Convert to File Partial"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/.n8n-files/arquivos_projeto/tasks.json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "a6ea868a-c7df-44c7-9ef8-e0632e7de2a1",
+      "name": "Read Files from Disk"
+    }
+  ],
+  "pinData": {
+    "Code in JavaScript": [
+      {
+        "json": {
+          "disponivel": -40,
+          "exigido": 20,
+          "saldo": -60
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Read Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Rules",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Files Inviave": {
+      "main": [
+        []
+      ]
+    },
+    "Rules": {
+      "main": [
+        [
+          {
+            "node": "IA Unfeasible Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IA Viavel Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IA Partial Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA Unfeasible Response": {
+      "main": [
+        [
+          {
+            "node": "Convert to File Unfeasible",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA Viavel Response": {
+      "main": [
+        [
+          {
+            "node": "Convert to File Viavel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA Partial Response": {
+      "main": [
+        [
+          {
+            "node": "Convert to File Partial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File Unfeasible": {
+      "main": [
+        [
+          {
+            "node": "Write Files Inviave",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File Viavel": {
+      "main": [
+        [
+          {
+            "node": "Write Files Viavel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File Partial": {
+      "main": [
+        [
+          {
+            "node": "Write Files Parcial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "30f577a5-a4d6-4c9e-a649-a2905fff0966",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "23a0d738886ceeb6109846f1ec361f0b2dc326abc78574ad07d9bce985efb13e"
+  },
+  "id": "GaLeMf6bRSS5hyzf",
+  "tags": []
+}

@@ -1,0 +1,19 @@
+﻿task_id,employee_id,employee,team,description,estimated_hours,priority,deadline
+TASK-001,EMP-001,Ana Silva,Marketing,Preparar relatório mensal de performance,8,high,2026-09-01
+TASK-002,EMP-001,Ana Silva,Marketing,Atualizar calendário de conteúdo,6,medium,2026-09-02
+TASK-003,EMP-001,Ana Silva,Marketing,Criar campanha de e-mail,10,high,2026-09-03
+TASK-004,EMP-001,Ana Silva,Marketing,Revisar materiais de campanha,7,medium,2026-09-04
+TASK-005,EMP-001,Ana Silva,Marketing,Analisar métricas de anúncios,9,high,2026-09-04
+TASK-006,EMP-002,Bruno Costa,Desenvolvimento,Corrigir bugs do sprint,12,high,2026-09-01
+TASK-007,EMP-002,Bruno Costa,Desenvolvimento,Implementar endpoint de integração,10,high,2026-09-03
+TASK-008,EMP-002,Bruno Costa,Desenvolvimento,Atualizar testes automatizados,8,medium,2026-09-04
+TASK-009,EMP-002,Bruno Costa,Desenvolvimento,Documentar API,8,low,2026-09-05
+TASK-010,EMP-003,Carla Mendes,Operações,Auditar processos internos,14,high,2026-09-01
+TASK-011,EMP-003,Carla Mendes,Operações,Atualizar indicadores operacionais,10,high,2026-09-02
+TASK-012,EMP-003,Carla Mendes,Operações,Revisar procedimentos,9,medium,2026-09-03
+TASK-013,EMP-003,Carla Mendes,Operações,Preparar treinamento da equipe,11,high,2026-09-04
+TASK-014,EMP-003,Carla Mendes,Operações,Consolidar documentação operacional,8,low,2026-09-05
+TASK-015,EMP-004,Diego Santos,Suporte,Resolver chamados prioritários,15,high,2026-09-01
+TASK-016,EMP-004,Diego Santos,Suporte,Revisar base de conhecimento,9,medium,2026-09-03
+TASK-017,EMP-004,Diego Santos,Suporte,Analisar incidentes recorrentes,8,high,2026-09-04
+TASK-018,EMP-004,Diego Santos,Suporte,Atualizar relatórios de atendimento,9,low,2026-09-05

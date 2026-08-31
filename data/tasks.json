@@ -1,0 +1,219 @@
+{
+  "metadata": {
+    "scenario": "Dados sintéticos para avaliação de detecção de sobrecarga extrema de capacidade",
+    "week_start": "2026-08-31",
+    "weekly_capacity_hours_per_employee": 40
+  },
+  "tasks": [
+    {
+      "task_id": "TASK-001",
+      "employee_id": "EMP-001",
+      "employee": "Ana Silva",
+      "team": "Marketing",
+      "description": "Preparar relatório mensal de performance",
+      "estimated_hours": 24,
+      "priority": "high",
+      "deadline": "2026-09-01"
+    },
+    {
+      "task_id": "TASK-002",
+      "employee_id": "EMP-001",
+      "employee": "Ana Silva",
+      "team": "Marketing",
+      "description": "Atualizar calendário de conteúdo",
+      "estimated_hours": 16,
+      "priority": "medium",
+      "deadline": "2026-09-02"
+    },
+    {
+      "task_id": "TASK-003",
+      "employee_id": "EMP-001",
+      "employee": "Ana Silva",
+      "team": "Marketing",
+      "description": "Criar campanha de e-mail",
+      "estimated_hours": 20,
+      "priority": "high",
+      "deadline": "2026-09-03"
+    },
+    {
+      "task_id": "TASK-004",
+      "employee_id": "EMP-001",
+      "employee": "Ana Silva",
+      "team": "Marketing",
+      "description": "Revisar materiais de campanha",
+      "estimated_hours": 18,
+      "priority": "medium",
+      "deadline": "2026-09-04"
+    },
+    {
+      "task_id": "TASK-005",
+      "employee_id": "EMP-001",
+      "employee": "Ana Silva",
+      "team": "Marketing",
+      "description": "Analisar métricas de anúncios",
+      "estimated_hours": 22,
+      "priority": "high",
+      "deadline": "2026-09-04"
+    },
+    {
+      "task_id": "TASK-006",
+      "employee_id": "EMP-002",
+      "employee": "Bruno Costa",
+      "team": "Desenvolvimento",
+      "description": "Corrigir bugs do sprint",
+      "estimated_hours": 25,
+      "priority": "high",
+      "deadline": "2026-09-01"
+    },
+    {
+      "task_id": "TASK-007",
+      "employee_id": "EMP-002",
+      "employee": "Bruno Costa",
+      "team": "Desenvolvimento",
+      "description": "Implementar endpoint de integração",
+      "estimated_hours": 20,
+      "priority": "high",
+      "deadline": "2026-09-03"
+    },
+    {
+      "task_id": "TASK-008",
+      "employee_id": "EMP-002",
+      "employee": "Bruno Costa",
+      "team": "Desenvolvimento",
+      "description": "Atualizar testes automatizados",
+      "estimated_hours": 15,
+      "priority": "medium",
+      "deadline": "2026-09-04"
+    },
+    {
+      "task_id": "TASK-009",
+      "employee_id": "EMP-002",
+      "employee": "Bruno Costa",
+      "team": "Desenvolvimento",
+      "description": "Documentar API",
+      "estimated_hours": 20,
+      "priority": "low",
+      "deadline": "2026-09-05"
+    },
+    {
+      "task_id": "TASK-010",
+      "employee_id": "EMP-003",
+      "employee": "Carla Mendes",
+      "team": "Operações",
+      "description": "Auditar processos internos",
+      "estimated_hours": 30,
+      "priority": "high",
+      "deadline": "2026-09-01"
+    },
+    {
+      "task_id": "TASK-011",
+      "employee_id": "EMP-003",
+      "employee": "Carla Mendes",
+      "team": "Operações",
+      "description": "Atualizar indicadores operacionais",
+      "estimated_hours": 25,
+      "priority": "high",
+      "deadline": "2026-09-02"
+    },
+    {
+      "task_id": "TASK-012",
+      "employee_id": "EMP-003",
+      "employee": "Carla Mendes",
+      "team": "Operações",
+      "description": "Revisar procedimentos",
+      "estimated_hours": 20,
+      "priority": "medium",
+      "deadline": "2026-09-03"
+    },
+    {
+      "task_id": "TASK-013",
+      "employee_id": "EMP-003",
+      "employee": "Carla Mendes",
+      "team": "Operações",
+      "description": "Preparar treinamento da equipe",
+      "estimated_hours": 25,
+      "priority": "high",
+      "deadline": "2026-09-04"
+    },
+    {
+      "task_id": "TASK-014",
+      "employee_id": "EMP-003",
+      "employee": "Carla Mendes",
+      "team": "Operações",
+      "description": "Consolidar documentação operacional",
+      "estimated_hours": 15,
+      "priority": "low",
+      "deadline": "2026-09-05"
+    },
+    {
+      "task_id": "TASK-015",
+      "employee_id": "EMP-004",
+      "employee": "Diego Santos",
+      "team": "Suporte",
+      "description": "Resolver chamados prioritários",
+      "estimated_hours": 35,
+      "priority": "high",
+      "deadline": "2026-09-01"
+    },
+    {
+      "task_id": "TASK-016",
+      "employee_id": "EMP-004",
+      "employee": "Diego Santos",
+      "team": "Suporte",
+      "description": "Revisar base de conhecimento",
+      "estimated_hours": 25,
+      "priority": "medium",
+      "deadline": "2026-09-03"
+    },
+    {
+      "task_id": "TASK-017",
+      "employee_id": "EMP-004",
+      "employee": "Diego Santos",
+      "team": "Suporte",
+      "description": "Analisar incidentes recorrentes",
+      "estimated_hours": 20,
+      "priority": "high",
+      "deadline": "2026-09-04"
+    },
+    {
+      "task_id": "TASK-018",
+      "employee_id": "EMP-004",
+      "employee": "Diego Santos",
+      "team": "Suporte",
+      "description": "Atualizar relatórios de atendimento",
+      "estimated_hours": 20,
+      "priority": "low",
+      "deadline": "2026-09-05"
+    }
+  ],
+  "capacity_summary": [
+    {
+      "employee_id": "EMP-001",
+      "employee": "Ana Silva",
+      "weekly_capacity_hours": 40,
+      "assigned_hours": 100,
+      "excess_hours": 60
+    },
+    {
+      "employee_id": "EMP-002",
+      "employee": "Bruno Costa",
+      "weekly_capacity_hours": 40,
+      "assigned_hours": 80,
+      "excess_hours": 40
+    },
+    {
+      "employee_id": "EMP-003",
+      "employee": "Carla Mendes",
+      "weekly_capacity_hours": 40,
+      "assigned_hours": 115,
+      "excess_hours": 75
+    },
+    {
+      "employee_id": "EMP-004",
+      "employee": "Diego Santos",
+      "weekly_capacity_hours": 40,
+      "assigned_hours": 100,
+      "excess_hours": 60
+    }
+  ]
+}

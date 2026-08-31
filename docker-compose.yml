@@ -1,0 +1,47 @@
+volumes:
+  n8n_data:
+    external: true
+  ollama_data:
+  
+services:
+  # 1. Seu n8n
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n_scope_defender
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - type: bind
+        source: "./data"
+        target: /home/node/.n8n-files/arquivos_projeto
+      - type: bind
+        source: "./trajectories"
+        target: /home/node/.n8n-files/trajectories
+    environment:
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+      - EXECUTIONS_DATA_SAVE_ON_SUCCESS=none
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_MAX_AGE=168
+      - N8N_DEFAULT_TIMEOUT=120000
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=false
+
+  # 2. Inteligência Artificial Local
+  ollama:
+    image: ollama/ollama
+    container_name: ollama_scope_defender
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_KEEP_ALIVE=-1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

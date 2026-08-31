@@ -1,0 +1,13 @@
+Assunto: Nova demanda urgente – entrega até hoje
+
+Olá, equipe de TI,
+
+Precisamos desenvolver e disponibilizar um novo sistema de controle de chamados com cadastro de usuários, níveis de acesso, abertura e acompanhamento de solicitações, notificações por e-mail, painel de indicadores e integração com o sistema atual.
+
+A demanda deve ser concluída, testada e colocada em produção até hoje, às 17h, mesmo que seja necessário trabalhar após o horário normal. A diretoria considera esse prazo definitivo, portanto não haverá possibilidade de adiamento.
+
+Conto com o empenho de todos para que a entrega seja realizada dentro do prazo.
+
+Atenciosamente,
+Gestor de Tecnologia
+
