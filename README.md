@@ -1,135 +1,141 @@
 # 🛡️ Scope Defender
 
-**Scope Defender** é um orquestrador de IA desenvolvido para auxiliar profissionais e equipes de engenharia na negociação de prazos e escopos de demandas urgentes.
+**Scope Defender** is an AI orchestrator developed to assist engineering professionals and teams in negotiating deadlines and scopes for urgent demands.
 
-## 🎯 O Problema
+## 🎯 The Problem
 
-Equipes de engenharia frequentemente aceitam prazos irreais sob pressão porque não possuem tempo suficiente para calcular sua capacidade técnica no momento da cobrança.
+Engineering teams frequently accept unrealistic deadlines under pressure because they lack sufficient time to calculate their technical capacity at the moment of the request.
 
-Isso transforma uma decisão que deveria ser baseada em dados em uma negociação baseada em pressão, estimativas mentais e percepção subjetiva.
+This turns a decision that should be data-driven into a negotiation based on pressure, mental estimates, and subjective perception.
 
-## 💡 A Solução
+## 💡 The Solution
 
-O **Scope Defender** utiliza **N8N + LLMs locais** para interceptar uma demanda urgente, cruzá-la com a capacidade atual da equipe e gerar uma resposta corporativa fundamentada em dados concretos.
+**Scope Defender** uses **N8N + local LLMs** to intercept an urgent demand, cross-reference it with the team's current capacity, and generate a corporate response grounded in concrete data.
 
-A arquitetura separa claramente as responsabilidades:
+The architecture clearly separates responsibilities:
 
-- **LLM:** interpretação semântica e geração de linguagem.
-- **N8N:** orquestração do processo.
-- **Code Node:** cálculos matemáticos determinísticos.
-- **Switch:** tomada de decisão baseada em regras.
-- **Ollama:** inferência local.
-- **Write to File:** registro das trajetórias para auditoria.
+* **LLM:** Semantic interpretation and language generation.
+* **N8N:** Process orchestration.
+* **Code Node:** Deterministic mathematical calculations.
+* **Switch:** Rule-based decision making.
+* **Ollama:** Local inference.
+* **Write to File:** Trajectory logging for auditing.
 
 ---
 
-## 🏗️ Arquitetura do Workflow
+## 🏗️ Workflow Architecture
 
-> **TODO:** Adicione aqui um screenshot atualizado mostrando as 3 ramificações finais no N8N.
+<img width="803" height="503" alt="image" src="https://github.com/user-attachments/assets/08963cc1-1081-42f4-802b-26ca07e66970" />
 
-O sistema opera em uma arquitetura determinística, separando **raciocínio semântico** de **execução lógica**:
+
+The system operates on a deterministic architecture, separating **semantic reasoning** from **logical execution**:
 
 ### 1. Input
 
-Recebe o e-mail de cobrança do gestor e extrai os dados estruturados da equipe.
+Receives the manager's request email and extracts structured team data.
 
-Os dados utilizados pelo workflow incluem informações como:
+Data used by the workflow includes information such as:
 
-- Capacidade disponível.
-- Alocação atual.
-- Esforço estimado da nova demanda.
-- Prazo solicitado.
+* Available capacity.
+* Current allocation.
+* Estimated effort for the new demand.
+* Requested deadline.
 
-### 2. Cálculo Nativo — Code Node
+### 2. Native Calculation — Code Node
 
-Um script JavaScript simples processa a matemática real:
+A simple JavaScript script processes the actual math:
 
 ```text
 capacidade - alocação = saldo
+
 ```
 
-O cálculo é executado diretamente pelo N8N, eliminando o risco de alucinação numérica da IA.
+The calculation is executed directly by N8N, eliminating the risk of numerical hallucination by the AI.
 
-A IA não é responsável por realizar a operação matemática.
+The AI is not responsible for performing mathematical operations.
 
-### 3. Switch Determinístico — N8N
+### 3. Deterministic Switch — N8N
 
-O Switch avalia o saldo calculado e determina qual cenário deve ser executado.
+The Switch evaluates the calculated balance and determines which scenario should be executed.
 
-As três condições são:
+The three conditions are:
 
 ```text
 saldo < 0
+
 ```
 
-**INVIÁVEL**
+**INFEASIBLE**
 
 ```text
 saldo >= 0 && saldo < 8
+
 ```
 
-**PARCIAL**
+**PARTIAL**
 
 ```text
 saldo >= 8
+
 ```
 
-**VIÁVEL**
+**FEASIBLE**
 
-Dessa forma, o roteamento é realizado por regras determinísticas, sem depender da interpretação subjetiva do LLM.
+This way, routing is handled by deterministic rules, without relying on the subjective interpretation of the LLM.
 
-### 4. Agentes Comunicadores Isolados — Ollama
+### 4. Isolated Communicator Agents — Ollama
 
-Após o Switch, o workflow possui **três nós Ollama independentes**.
+After the Switch, the workflow has **three independent Ollama nodes**.
 
-Cada agente possui um prompt específico e restrito ao seu cenário:
+Each agent has a specific prompt restricted to its scenario:
 
-| Cenário | Agente | Comportamento |
-|---|---|---|
-| 🔴 Inviável | Comunicador Defensivo | Defesa do escopo e justificativa baseada no déficit |
-| 🟡 Parcial | Comunicador de Alerta | Aceite condicionado e explicitação dos riscos |
-| 🟢 Viável | Comunicador de Aceite | Aceite limpo e objetivo |
+| Scenario | Agent | Behavior |
+| --- | --- | --- |
+| 🔴 Infeasible | Defensive Communicator | Scope defense and justification based on the deficit |
+| 🟡 Partial | Alert Communicator | Conditional acceptance and explicit statement of risks |
+| 🟢 Feasible | Acceptance Communicator | Clean and objective acceptance |
 
-Essa arquitetura implementa **Prompt Isolation**, evitando que um único prompt genérico tente interpretar simultaneamente diferentes cenários de negócio.
+This architecture implements **Prompt Isolation**, preventing a single generic prompt from attempting to simultaneously interpret different business scenarios.
 
-As variáveis calculadas pelo workflow são injetadas diretamente nos prompts, mantendo os números fora da responsabilidade do modelo.
+Variables calculated by the workflow are injected directly into the prompts, keeping numbers outside the model's responsibility.
 
-### 5. Gravação de Trajetórias
+### 5. Trajectory Logging
 
-Cada ramificação grava sua saída em um arquivo `.txt` separado para permitir auditoria e análise posterior da execução.
+Each branch logs its output to a separate `.txt` file to allow for auditing and subsequent execution analysis.
 
-Os arquivos são armazenados em:
+Files are stored in:
 
 ```text
 /data/
+
 ```
 
 ---
 
-## 🧠 Princípio de Engenharia
+## 🧠 Engineering Principle
 
-Um dos principais princípios arquiteturais do Scope Defender é:
+One of the main architectural principles of Scope Defender is:
 
-> **A IA interpreta e comunica. O código calcula. O workflow decide.**
+> **The AI interprets and communicates. The code calculates. The workflow decides.**
 
-O fluxo pode ser representado como:
+The flow can be represented as:
 
 ```text
                     ┌─────────────────┐
                     │      INPUT      │
-                    │ Demanda + Dados │
+                    │ Demand + Data   │
                     └────────┬────────┘
                              │
                              ▼
                     ┌─────────────────┐
                     │   CODE NODE     │
-                    │ Cálculo exato   │
+                    │ Exact math      │
                     └────────┬────────┘
                              │
                              ▼
                     ┌─────────────────┐
                     │     SWITCH      │
-                    │ Regras de saldo │
+                    │ Balance rules   │
                     └─────┬───┬───┬───┘
                           │   │   │
                  < 0 ─────┘   │   └───── >= 8
@@ -139,172 +145,184 @@ O fluxo pode ser representado como:
               ▼               ▼               ▼
        ┌────────────┐  ┌────────────┐  ┌────────────┐
        │  OLLAMA #1 │  │  OLLAMA #2 │  │  OLLAMA #3 │
-       │  INVIÁVEL  │  │  PARCIAL   │  │   VIÁVEL   │
+       │ INFEASIBLE │  │   PARTIAL  │  │  FEASIBLE  │
        └──────┬─────┘  └──────┬─────┘  └──────┬─────┘
               │               │               │
               └───────────────┼───────────────┘
                               ▼
                     ┌─────────────────┐
                     │  WRITE TO FILE  │
-                    │   Trajetória    │
+                    │   Trajectory    │
                     └─────────────────┘
+
 ```
 
 ---
 
-## ⚙️ Pré-requisitos
+## ⚙️ Prerequisites
 
-Para executar o projeto localmente:
+To run the project locally:
 
-- Docker
-- Docker Compose
-- N8N
-- Ollama
-- NVIDIA Container Toolkit
-- GPU NVIDIA compatível com aceleração CUDA
+* Docker
+* Docker Compose
+* N8N
+* Ollama
+* NVIDIA Container Toolkit
+* NVIDIA GPU compatible with CUDA acceleration
 
-### Portas utilizadas
+### Used Ports
 
-| Serviço | Porta |
-|---|---:|
+| Service | Port |
+| --- | --- |
 | N8N | `5678` |
 | Ollama | `11434` |
 
 ---
 
-## 🖥️ Hardware de Referência
+## 🖥️ Reference Hardware
 
-O projeto foi desenvolvido, testado e otimizado localmente utilizando:
+The project was developed, tested, and locally optimized using:
 
-| Componente | Especificação |
-|---|---|
+| Component | Specification |
+| --- | --- |
 | CPU | AMD Ryzen 7 5700X |
 | GPU | NVIDIA RTX 3070 8 GB |
 | RAM | 16 GB |
-| Inferência | Ollama + GPU NVIDIA |
-| Modelo | Llama 3 8B |
+| Inference | Ollama + NVIDIA GPU |
+| Model | Llama 3 8B |
 
-A GPU acelera a inferência local do modelo, permitindo o processamento do workflow em poucos segundos em condições adequadas de execução.
+The GPU accelerates local model inference, allowing workflow processing in a few seconds under adequate execution conditions.
 
 ---
 
-# 🚀 Guia de Reprodução
+# 🚀 Reproduction Guide
 
-## 1. Clone o repositório
+## 1. Clone the repository
 
 ```bash
-git clone https://github.com/SEU-USUARIO/ScopeDefender.git
+git clone https://github.com/YOUR-USER/ScopeDefender.git
 cd ScopeDefender
 cp .env.example .env
+
 ```
 
-Configure o arquivo `.env` conforme necessário.
+Configure the `.env` file as needed.
 
 ---
 
-## 2. Suba a infraestrutura
+## 2. Spin up the infrastructure
 
 ```bash
 docker-compose up -d
+
 ```
 
-Verifique os containers:
+Check the containers:
 
 ```bash
 docker ps
+
 ```
 
 ---
 
-## 3. Instale a Inteligência
+## 3. Set up the AI
 
-Na primeira execução, o servidor Ollama estará sem modelos.
+On the first run, the Ollama server will have no models.
 
-Baixe o modelo:
+Download the model:
 
 ```bash
 docker exec -it ollama_scope_defender ollama run llama3
+
 ```
 
-Aguarde o download terminar.
+Wait for the download to finish.
 
-Quando aparecer:
+When it displays:
 
 ```text
 >>>
+
 ```
 
 execute:
 
 ```text
 /bye
+
 ```
 
-e pressione `Enter`.
+and press `Enter`.
 
 ---
 
-## 4. Importe os Workflows
+## 4. Import the Workflows
 
-Acesse:
+Access:
 
 ```text
 http://localhost:5678
+
 ```
 
-Depois:
+Then:
 
-1. Vá em **Workflows**.
-2. Clique em **Add Workflow**.
-3. Abra o menu de opções.
-4. Selecione **Import from File**.
-5. Importe:
+1. Go to **Workflows**.
+2. Click on **Add Workflow**.
+3. Open the options menu.
+4. Select **Import from File**.
+5. Import:
 
 ```text
 baseline_workflow.json
 scope_defender_workflow.json
+
 ```
 
 ---
 
-## 5. Teste o Sistema
+## 5. Test the System
 
-Abra o fluxo **Scope Defender**, clique no nó manual de gatilho e execute o workflow.
+Open the **Scope Defender** flow, click the manual trigger node, and execute the workflow.
 
-O fluxo gravará automaticamente as saídas na pasta `/data/` como:
+The flow will automatically log the outputs in the `/data/` folder as:
 
 ```text
 trajectory_01_inviavel.txt
 trajectory_02_parcial.txt
 trajectory_03_viavel.txt
+
 ```
 
-Cada arquivo representa a trajetória de execução correspondente ao cenário processado.
+Each file represents the execution trajectory corresponding to the processed scenario.
 
 ---
 
-# 📥 Input e 📤 Output
+# 📥 Input and 📤 Output
 
 ## Input
 
-Exemplo de dados processados pelo workflow:
+Example of data processed by the workflow:
 
 ```json
 {
   "disponivel": -40,
   "exigido": 20
 }
+
 ```
 
-O **Code Node** realiza o cálculo:
+The **Code Node** performs the calculation:
 
 ```text
 saldo = disponível - exigido
 saldo = -40 - 20
 saldo = -60
+
 ```
 
-Resultado:
+Result:
 
 ```json
 {
@@ -312,71 +330,70 @@ Resultado:
   "exigido": 20,
   "saldo": -60
 }
+
 ```
 
 ---
 
 ## Output
 
-Como o saldo é inferior a zero, o Switch direciona a execução para o comunicador **INVIÁVEL**.
+Since the balance is less than zero, the Switch routes the execution to the **INFEASIBLE** communicator.
 
-Exemplo:
+Example:
 
-> Olá, Gestor,
->
-> Lamento informar que não posso atender ao prazo de hoje às 17h para a nova demanda. A equipe já está trabalhando com um déficit de -40h e agora precisa absorver mais 20h. Isso resultaria em um déficit total de -60h, comprometendo significativamente a qualidade e a segurança da entrega.
->
-> Para resolvermos de forma realista, sugiro dividir o escopo em duas etapas: Fase 1, contemplando as funcionalidades essenciais, e Fase 2, contemplando as demais integrações e funcionalidades complementares.
+> Hello, Manager,
+> I regret to inform you that I cannot meet today's 5 PM deadline for the new demand. The team is already working with a -40h deficit and now needs to absorb an additional 20h. This would result in a total deficit of -60h, significantly compromising the quality and security of the delivery.
+> To resolve this realistically, I suggest dividing the scope into two stages: Phase 1, covering the essential features, and Phase 2, covering the remaining integrations and complementary features.
 
 ---
 
-# 📊 Métricas de Melhoria
+# 📊 Improvement Metrics
 
-| Métrica | Baseline Manual | Scope Defender |
-|---|---|---|
-| **Tempo de análise** | ~25 min | **< 10 segundos** |
-| **Precisão do cálculo** | Estimativa mental sob pressão | **100% via Code Node** |
-| **Argumentação utilizada** | Sem números concretos | **Saldo calculado automaticamente** |
-| **Alternativa proposta** | Raramente elaborada sob estresse | **Gerada conforme cenário** |
-| **Controle do tom** | Prompt genérico | **3 prompts isolados** |
-| **Roteamento** | Dependente da interpretação da IA | **Determinístico via Switch** |
-| **Auditoria** | Inexistente/manual | **Trajetórias `.txt`** |
+| Metric | Manual Baseline | Scope Defender |
+| --- | --- | --- |
+| **Analysis time** | ~25 min | **< 10 seconds** |
+| **Calculation accuracy** | Mental estimate under pressure | **100% via Code Node** |
+| **Argumentation used** | No concrete numbers | **Automatically calculated balance** |
+| **Proposed alternative** | Rarely elaborated under stress | **Generated based on scenario** |
+| **Tone control** | Generic prompt | **3 isolated prompts** |
+| **Routing** | Dependent on AI interpretation | **Deterministic via Switch** |
+| **Auditing** | Non-existent/manual | **`.txt` trajectories** |
 
-> As métricas representam o cenário de referência utilizado durante o desenvolvimento e os testes do projeto.
-
----
-
-# 🔐 Privacidade e Processamento Local
-
-O Scope Defender utiliza **Ollama** para executar os modelos localmente.
-
-A arquitetura reduz a necessidade de enviar dados internos da equipe para APIs externas de modelos de linguagem.
-
-O processamento pode permanecer dentro do ambiente local:
-
-- Dados da equipe.
-- Inferência do LLM.
-- Workflows do N8N.
-- Resultados gerados.
-- Trajetórias de execução.
+> The metrics represent the reference scenario used during the project's development and testing.
 
 ---
 
-# 🛠️ Disclosure de IA
+# 🔐 Privacy and Local Processing
 
-Este projeto utiliza:
+Scope Defender uses **Ollama** to run models locally.
 
-- **Orquestração:** N8N via Docker
-- **Motor de inferência:** Ollama
-- **Aceleração:** NVIDIA Container Toolkit
-- **Modelo:** Llama 3 8B
-- **Arquitetura:** Agentes comunicadores + regras determinísticas
-- **Cálculos:** JavaScript via N8N Code Node
-- **Auditoria:** arquivos `.txt`
+The architecture reduces the need to send internal team data to external language model APIs.
+
+Processing can remain entirely within the local environment:
+
+* Team data.
+* LLM inference.
+* N8N workflows.
+* Generated results.
+* Execution trajectories.
 
 ---
 
-# 📁 Estrutura do Projeto
+# 🛠️ AI Disclosure
+
+This project uses:
+
+* **Orchestration:** N8N via Docker
+* **Inference engine:** Ollama
+* **Acceleration:** NVIDIA Container Toolkit
+* **Model:** Llama 3 8B
+* **Architecture:** Communicator agents + deterministic rules
+* **Calculations:** JavaScript via N8N Code Node
+* **Auditing:** `.txt` files
+
+---
+
+# 📁 Project Structure
 
 ```text
 ScopeDefender/
@@ -400,16 +417,6 @@ ScopeDefender/
 │
 └── screenshots/
     └── workflow.png
+
 ```
 
----
-
-# 📜 Licença
-
-Defina aqui a licença do projeto caso o repositório seja publicado.
-
-Exemplo:
-
-```text
-MIT License
-```
