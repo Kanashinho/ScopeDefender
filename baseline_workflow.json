@@ -1,23 +1,20 @@
 {
-  "name": "basiline",
+  "name": "Baseline Manual",
   "nodes": [
     {
       "parameters": {},
+      "id": "trigger-baseline",
+      "name": "When clicking ‘Execute workflow’",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [
-        0,
-        0
-      ],
-      "id": "393e75fe-0f93-41e2-b1da-e9ce13c241ac",
-      "name": "When clicking ‘Execute workflow’"
+      "position": [0, 0]
     },
     {
       "parameters": {
         "assignments": {
           "assignments": [
             {
-              "id": "45534c74-5897-4143-b66d-26ccad8e5473",
+              "id": "email-gestor-baseline",
               "name": "email_gestor",
               "value": "Assunto: Nova demanda urgente – entrega até hoje  Olá, equipe de TI,  Precisamos desenvolver e disponibilizar um novo sistema de controle de chamados com cadastro de usuários, níveis de acesso, abertura e acompanhamento de solicitações, notificações por e-mail, painel de indicadores e integração com o sistema atual.  A demanda deve ser concluída, testada e colocada em produção até hoje, às 17h, mesmo que seja necessário trabalhar após o horário normal. A diretoria considera esse prazo definitivo, portanto não haverá possibilidade de adiamento.  Conto com o empenho de todos para que a entrega seja realizada dentro do prazo.  Atenciosamente, Gestor de Tecnologia",
               "type": "string"
@@ -26,42 +23,11 @@
         },
         "options": {}
       },
+      "id": "edit-fields-baseline",
+      "name": "Edit Fields",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
-      "position": [
-        208,
-        0
-      ],
-      "id": "8284b680-c94b-45e1-965d-7e3ba3ab55d6",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "fileSelector": "/home/node/.n8n-files/arquivos_projeto/tasks.json",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1.1,
-      "position": [
-        416,
-        0
-      ],
-      "id": "dda24d2e-bc0c-45a7-a8e6-6812711d14ae",
-      "name": "Read/Write Files from Disk"
-    },
-    {
-      "parameters": {
-        "operation": "fromJson",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1.1,
-      "position": [
-        624,
-        0
-      ],
-      "id": "bd4baf0e-922b-476f-a42a-1b0f8f5670ac",
-      "name": "Extract from File"
+      "position": [200, 0]
     },
     {
       "parameters": {
@@ -74,55 +40,17 @@
         "messages": {
           "values": [
             {
-              "content": "=Você é um Especialista em Comunicação Corporativa. Escreva UM (1) único e-mail profissional e objetivo para o Gestor de Tecnologia.\n\nContexto Técnico Atual:\n\nHoras já comprometidas/disponíveis: {{ JSON.parse($json.content).disponivel }}h\n\nHoras exigidas pela nova demanda: {{ JSON.parse($json.content).exigido }}h\n\nSaldo final da equipe: {{ JSON.parse($json.content).saldo }}h (Sobrecarga).\n\nDiretrizes de Redação:\n\nInicie diretamente com \"Olá, Gestor,\".\n\nRecuse educadamente o prazo de hoje às 17h. Use os números exatos acima para justificar que a equipe já está trabalhando com um déficit de horas e absorver a demanda causaria impacto na qualidade.\n\nProponha a divisão de escopo: Fase 1 (funcionalidades essenciais) e Fase 2 (funcionalidades secundárias).\n\nAssine apenas UMA VEZ no final como \"[Seu Nome] - Engenharia de Software\".\n\nNÃO repita parágrafos. NÃO adicione texto após a assinatura. Cuidado com erros de digitação."
+              "content": "=Você é um funcionário da Engenharia de Software. Responda a este e-mail do Gestor de Tecnologia da forma que achar mais adequada e profissional:\n\nE-mail do Gestor:\n{{ $json.email_gestor }}"
             }
           ]
         },
         "options": {}
       },
+      "id": "ia-resposta-baseline",
+      "name": "IA Baseline (Sem Dados)",
       "type": "@n8n/n8n-nodes-langchain.ollama",
       "typeVersion": 1,
-      "position": [
-        816,
-        0
-      ],
-      "id": "8b8dc9af-a838-4758-8503-81233cbc2b7a",
-      "name": "IA Resposta",
-      "credentials": {
-        "ollamaApi": {
-          "id": "DsqjgX0o2SyOzEii",
-          "name": "Ollama account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "write",
-        "fileName": "/home/node/.n8n-files/arquivos_projeto/trajectory_01_inviavel.json",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1.1,
-      "position": [
-        1360,
-        0
-      ],
-      "id": "8045156a-1fa1-4cfb-bf4a-f6719ca53da2",
-      "name": "Read/Write Files from Disk1"
-    },
-    {
-      "parameters": {
-        "operation": "toJson",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.convertToFile",
-      "typeVersion": 1.1,
-      "position": [
-        1152,
-        0
-      ],
-      "id": "7b4a2d04-27ac-4414-9e4d-80619c711506",
-      "name": "Convert to File"
+      "position": [400, 0]
     }
   ],
   "pinData": {},
@@ -142,51 +70,7 @@
       "main": [
         [
           {
-            "node": "Read/Write Files from Disk",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Read/Write Files from Disk": {
-      "main": [
-        [
-          {
-            "node": "Extract from File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract from File": {
-      "main": [
-        [
-          {
-            "node": "IA Resposta",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "IA Resposta": {
-      "main": [
-        [
-          {
-            "node": "Convert to File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Convert to File": {
-      "main": [
-        [
-          {
-            "node": "Read/Write Files from Disk1",
+            "node": "IA Baseline (Sem Dados)",
             "type": "main",
             "index": 0
           }
@@ -196,14 +80,7 @@
   },
   "active": false,
   "settings": {
-    "executionOrder": "v1",
-    "binaryMode": "separate"
+    "executionOrder": "v1"
   },
-  "versionId": "e4eafc0f-a196-49eb-b040-e6979402269f",
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "23a0d738886ceeb6109846f1ec361f0b2dc326abc78574ad07d9bce985efb13e"
-  },
-  "id": "TEk7qmZxIer0NHk2",
-  "tags": []
+  "versionId": "baseline-version-01"
 }
