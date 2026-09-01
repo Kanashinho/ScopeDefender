@@ -202,7 +202,7 @@ The GPU accelerates local model inference, allowing workflow processing in a few
 ## 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR-USER/ScopeDefender.git
+git clone https://github.com/kanashinho/ScopeDefender.git
 cd ScopeDefender
 cp .env.example .env
 
