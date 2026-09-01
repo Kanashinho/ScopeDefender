@@ -404,21 +404,17 @@ ScopeDefender/
 ├── TOOLS.md
 ├── CHANGELOG.md
 ├── docker-compose.yml
-├── .env.example
+├── .env
 ├── .gitignore
-│
-├── workflows/
-│   ├── baseline_workflow.json
-│   └── scope_defender_workflow.json
+├──  baseline_workflow.json
+├──  scope_defender_workflow.json
 │
 ├── data/
-│   ├── team_capacity.json
-│   ├── trajectory_01_inviavel.txt
-│   ├── trajectory_02_parcial.txt
-│   └── trajectory_03_viavel.txt
-│
-└── screenshots/
-    └── workflow.png
+│   ├── tasks.json
+│   ├── tasks.csv
+|
+├── trajectories/
+│   ├── .gitkeep
 
 ```
 
